@@ -1,0 +1,25 @@
+.DS_Store
+
+app/vendor/*
+
+runtime/*
+!runtime/.htaccess
+!runtime/index.html
+
+# IDE Files
+#-------------------------
+/nbproject/
+.idea/*
+
+## Sublime Text cache files
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
+
+# Env file (secrets)
+.env
+
+# Node (frontend dependencies)
+node_modules/
