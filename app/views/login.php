@@ -2,124 +2,134 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>🐱 Login Page 🐾</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
   <style>
+    :root{
+      --bg:#0f172a; 
+      --panel:#111827; 
+      --muted:#1f2937; 
+      --muted-2:#374151; 
+      --text:#e5e7eb; 
+      --text-dim:#9ca3af;
+      --primary:#22d3ee; 
+      --primary-2:#06b6d4; 
+      --danger:#ef4444; 
+      --success:#22c55e; 
+      --radius:16px; 
+      --shadow:0 10px 25px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box;}
     body {
-      font-family: 'Comic Sans MS', cursive, sans-serif;
-      background-color: #fff8f0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      overflow: hidden;
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(180deg,var(--bg),#0b1229 60%);
+      color:var(--text);
+      font:18px/1.5 "Segoe UI", sans-serif;
     }
-
-    /* Floating cats */
-    .cat {
-      position: absolute;
-      font-size: 40px;
-      opacity: 0.8;
-      animation: floatUp 12s linear infinite;
-      pointer-events: none;
-    }
-    @keyframes floatUp {
-      from { transform: translateY(100vh) rotate(0deg); opacity: 0.7; }
-      to { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
-    }
-
-    form {
-      background: #fff0f5;
-      padding: 25px;
-      border-radius: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-      width: 320px;
-      text-align: center;
-      animation: fadeIn 1s ease-in-out;
-      position: relative;
-      z-index: 10;
+    .card {
+      width:min(400px,90vw);
+      background:linear-gradient(180deg,var(--panel),#0c1328);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:28px 24px;
     }
     h2 {
-      margin-bottom: 15px;
-      color: #333;
-      text-shadow: 2px 2px #ffe4e1;
+      margin:0 0 24px;
+      font-size:clamp(24px,3vw,32px);
+      text-align:center;
+      color:var(--primary);
     }
-    input {
-      width: 90%;
-      padding: 12px;
-      margin: 8px 0;
-      border: 2px solid #ffb6c1;
-      border-radius: 30px;
-      outline: none;
-      font-size: 15px;
-      transition: 0.3s;
+    .input-group {
+      margin-bottom:18px;
+      display:flex;
+      flex-direction:column;
     }
-    input:focus {
-      border-color: #ff69b4;
-      background-color: #ffe6f0;
-      box-shadow: 0 0 10px rgba(255,105,180,0.5);
+    .input-group label {
+      margin-bottom:6px;
+      font-weight:600;
+      font-size:14px;
+      color:var(--text-dim);
+    }
+    .input-group input {
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid var(--muted-2);
+      background:var(--muted);
+      color:var(--text);
+      font-size:15px;
+      outline:none;
+      transition:.2s;
+    }
+    .input-group input:focus {
+      border-color:var(--primary);
+      box-shadow:0 0 8px rgba(34,211,238,.4);
     }
     button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 12px;
-      background: #ffb6c1;
-      color: white;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
-      transition: 0.3s;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      width:100%;
+      padding:12px 16px;
+      background:linear-gradient(180deg,var(--primary),var(--primary-2));
+      color:#06222a;
+      font-size:16px;
+      font-weight:700;
+      border:none;
+      border-radius:12px;
+      cursor:pointer;
+      transition:.25s;
     }
     button:hover {
-      background: #ff69b4;
-      transform: scale(1.05);
+      transform:translateY(-2px);
+      box-shadow:0 0 10px rgba(34,211,238,.6);
     }
     .error {
-      color: red;
-      margin: 10px 0;
-      font-weight: bold;
+      color:var(--danger);
+      font-size:14px;
+      margin-bottom:12px;
+      font-weight:600;
+      text-align:center;
     }
     p {
-      margin-top: 15px;
-      font-size: 14px;
+      margin-top:20px;
+      text-align:center;
+      font-size:14px;
+      color:var(--text-dim);
     }
     a {
-      color: #ff69b4;
-      text-decoration: none;
-      font-weight: bold;
+      color:var(--primary);
+      font-weight:600;
+      text-decoration:none;
     }
     a:hover {
-      text-decoration: underline;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
+      text-decoration:underline;
     }
   </style>
 </head>
 <body>
-  <!-- Floating cats -->
-  <div class="cat" style="left:10%; animation-duration: 15s;">🐱</div>
-  <div class="cat" style="left:30%; animation-duration: 18s;">😺</div>
-  <div class="cat" style="left:50%; animation-duration: 12s;">😸</div>
-  <div class="cat" style="left:70%; animation-duration: 20s;">😹</div>
-  <div class="cat" style="left:85%; animation-duration: 14s;">😻</div>
+  <div class="card">
+    <h2>Login</h2>
 
-  <form action="<?= site_url('login') ?>" method="POST">
-    <h2>🐾 Login 🐾</h2>
     <?php if (!empty($error)) : ?>
       <p class="error"><?= $error ?></p>
     <?php endif; ?>
 
-    <input type="text" name="username" placeholder="😺 Username" required>
-    <input type="password" name="password" placeholder="🔒 Password" required>
-    <button type="submit">✨ Login ✨</button>
+    <form action="<?= site_url('login') ?>" method="POST">
+      <div class="input-group">
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username" placeholder="Enter your username" required>
+      </div>
 
-    <p>Don't have an account? <a href="<?= site_url('register') ?>">Register here 🐱</a></p>
-  </form>
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" placeholder="Enter your password" required>
+      </div>
+
+      <button type="submit">Login</button>
+    </form>
+
+    <p>Don’t have an account? <a href="<?= site_url('register') ?>">Register here</a></p>
+  </div>
 </body>
 </html>

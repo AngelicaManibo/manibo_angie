@@ -202,23 +202,21 @@ public function search()
     // call StudentsModel instead of writing SQL here
     $results = $this->StudentsModel->searchStudents($keyword);
 
-    $catIcons = ["🐱", "😺", "😸", "😹", "😻"];
-    $i = 0;
     if (!empty($results)) {
         foreach ($results as $row) {
             echo '
-            <tr>
-                <td>';
+            <tr class="student-row">
+                <td class="profile-pic">';
             // ✅ Profile picture check
             if (!empty($row['profile_pic'])) {
                 echo '<img src="/upload/students/' . htmlspecialchars($row['profile_pic']) . '" 
-                          alt="Profile" width="60" height="60" style="border-radius:50%;">';
+                          alt="Profile" width="60" height="60" class="profile-img">';
             } else {
                 echo '<img src="/upload/default.png" 
-                          alt="No Profile" width="60" height="60" style="border-radius:50%;">';
+                          alt="No Profile" width="60" height="60" class="profile-img">';
             }
             echo '</td>
-                <td>' . htmlspecialchars($row['id']) . ' ' . $catIcons[$i % count($catIcons)] . '</td>
+                <td>' . htmlspecialchars($row['id']) . '</td>
                 <td>' . htmlspecialchars($row['first_name']) . '</td>
                 <td>' . htmlspecialchars($row['last_name']) . '</td>
                 <td>' . htmlspecialchars($row['emails']) . '</td>
@@ -231,10 +229,9 @@ public function search()
                     </a>
                 </td>
             </tr>';
-            $i++;
         }
     } else {
-        echo "<tr><td colspan='6' style='text-align:center;'>No results found</td></tr>";
+        echo "<tr><td colspan='6' class='no-results'>No results found</td></tr>";
     }
 }
 

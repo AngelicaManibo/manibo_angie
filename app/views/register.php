@@ -1,144 +1,275 @@
+<?php
+if (!isset($_SESSION['user_id'])) {
+    header("Location: " . site_url('login'));
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Register</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Management</title>
   <style>
+    :root{
+      --bg:#0f172a; 
+      --panel:#111827; 
+      --muted:#1f2937; 
+      --muted-2:#374151; 
+      --text:#e5e7eb; 
+      --text-dim:#9ca3af;
+      --primary:#22d3ee; 
+      --primary-2:#06b6d4; 
+      --danger:#ef4444; 
+      --success:#22c55e; 
+      --radius:14px; 
+      --shadow:0 10px 25px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box;}
     body {
-      font-family: 'Comic Sans MS', cursive, sans-serif;
-      background-color: #fff8f0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
-      margin: 0;
+      margin:0;
+      min-height:100vh;
+      background:linear-gradient(180deg,var(--bg),#0b1229 60%);
+      color:var(--text);
+      font:16px/1.5 "Segoe UI", sans-serif;
+      padding:30px;
     }
 
-    /* Floating cat background */
-    .cat {
-      position: absolute;
-      font-size: 40px;
-      opacity: 0.8;
-      animation: floatUp 12s linear infinite;
-      pointer-events: none;
-    }
-    @keyframes floatUp {
-      from { transform: translateY(100vh) rotate(0deg); opacity: 0.7; }
-      to { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    h1 {
+      margin:0 0 24px;
+      font-size:clamp(22px,3vw,28px);
+      text-align:center;
+      color:var(--primary);
     }
 
-    /* Form container */
-    form {
-      background: #fff0f5;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-      width: 340px;
-      z-index: 10;
-      animation: fadeIn 1s ease-in-out;
+    .header-bar {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background:var(--panel);
+      padding:12px 18px;
+      border-radius:var(--radius);
+      margin-bottom:20px;
+      box-shadow:var(--shadow);
     }
-    h2 {
-      text-align: center;
-      color: #ff69b4;
-      margin-bottom: 15px;
-      text-shadow: 2px 2px #ffe4e1;
+    .header-bar .welcome {
+      color:var(--text-dim);
+      font-size:15px;
     }
-
-    label {
-      font-weight: bold;
-      color: #333;
+    .header-bar a {
+      background:linear-gradient(180deg,var(--danger),#b91c1c);
+      padding:8px 14px;
+      border-radius:10px;
+      color:#fff;
+      text-decoration:none;
+      font-weight:600;
+      transition:.25s;
     }
-    input {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: 2px solid #ffb6c1;
-      border-radius: 30px;
-      font-size: 14px;
-      outline: none;
-      background-color: #fffafc;
-      box-shadow: 0 3px 6px rgba(255,182,193,0.3);
-      transition: 0.3s;
-    }
-    input:focus {
-      border-color: #ff69b4;
-      background-color: #ffe6f0;
-      box-shadow: 0 4px 10px rgba(255,105,180,0.4);
+    .header-bar a:hover {
+      box-shadow:0 0 10px rgba(239,68,68,.6);
+      transform:translateY(-2px);
     }
 
-    button {
-      width: 100%;
-      padding: 12px;
-      background: #ffb6c1;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: 0.3s;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    .btn-add {
+      display:inline-block;
+      margin:20px 0;
+      background:linear-gradient(180deg,var(--primary),var(--primary-2));
+      color:#06222a;
+      font-weight:700;
+      padding:12px 18px;
+      border:none;
+      border-radius:var(--radius);
+      text-decoration:none;
+      transition:.25s;
+      box-shadow:var(--shadow);
     }
-    button:hover {
-      background: #ff69b4;
-      transform: scale(1.05) rotate(-2deg);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    .btn-add:hover {
+      transform:translateY(-2px);
+      box-shadow:0 0 10px rgba(34,211,238,.6);
     }
 
-    .error {
-      color: red;
-      text-align: center;
-      margin-bottom: 10px;
+    .search-container {
+      width:min(400px,100%);
+      margin:0 auto 25px;
+    }
+    .search-box {
+      width:100%;
+      padding:12px 14px;
+      border-radius:var(--radius);
+      border:1px solid var(--muted-2);
+      background:var(--muted);
+      color:var(--text);
+      outline:none;
+      transition:.25s;
+    }
+    .search-box:focus {
+      border-color:var(--primary);
+      box-shadow:0 0 8px rgba(34,211,238,.4);
     }
 
-    p {
-      text-align: center;
-      margin-top: 15px;
-      font-size: 14px;
+    .table-wrapper {
+      overflow-x:auto;
+      background:var(--panel);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:10px;
     }
-    p a {
-      color: #ff69b4;
-      font-weight: bold;
-      text-decoration: none;
+    table {
+      width:100%;
+      border-collapse:collapse;
+      color:var(--text);
     }
-    p a:hover {
-      text-decoration: underline;
+    thead {
+      background:var(--muted);
+    }
+    thead th {
+      padding:12px;
+      text-align:left;
+      font-size:14px;
+      color:var(--text-dim);
+    }
+    tbody td {
+      padding:12px;
+      border-top:1px solid var(--muted-2);
+      font-size:15px;
+    }
+    tr:hover td {
+      background:var(--muted);
+    }
+    td img {
+      border-radius:50%;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
+    .btn {
+      padding:6px 12px;
+      border-radius:8px;
+      font-size:14px;
+      font-weight:600;
+      text-decoration:none;
+      margin:2px;
+      display:inline-block;
+      transition:.25s;
+    }
+    .btn.update {
+      background:linear-gradient(180deg,#3b82f6,#2563eb);
+      color:#fff;
+    }
+    .btn.update:hover {
+      box-shadow:0 0 8px rgba(59,130,246,.6);
+      transform:translateY(-2px);
+    }
+    .btn.delete {
+      background:linear-gradient(180deg,var(--danger),#b91c1c);
+      color:#fff;
+    }
+    .btn.delete:hover {
+      box-shadow:0 0 8px rgba(239,68,68,.6);
+      transform:translateY(-2px);
+    }
+
+    .pagination {
+      display:flex;
+      justify-content:center;
+      gap:8px;
+      margin:20px 0;
+    }
+    .pagination a,
+    .pagination span {
+      padding:8px 12px;
+      border-radius:8px;
+      background:var(--muted);
+      color:var(--text);
+      font-size:14px;
+      text-decoration:none;
+      transition:.25s;
+    }
+    .pagination a:hover {
+      background:var(--muted-2);
+      color:var(--primary);
+    }
+    .pagination .current {
+      background:var(--primary);
+      color:#06222a;
+      font-weight:700;
     }
   </style>
 </head>
 <body>
-  <!-- Floating cats -->
-  <div class="cat" style="left:15%; animation-duration: 15s;">🐱</div>
-  <div class="cat" style="left:35%; animation-duration: 18s;">😺</div>
-  <div class="cat" style="left:55%; animation-duration: 12s;">😻</div>
-  <div class="cat" style="left:75%; animation-duration: 20s;">😸</div>
 
-  <form method="POST" action="/index.php/register">
-    <h2>🐾 Register 🐾</h2>
+  <div class="header-bar">
+    <div class="welcome">Welcome, <?= htmlspecialchars($_SESSION['username']); ?>!</div>
+    <div><a href="<?= site_url('logout'); ?>">Logout</a></div>
+  </div>
 
-    <?php if (!empty($error)): ?>
-      <p class="error"><?= $error ?></p>
-    <?php endif; ?>
+  <h1>Student Management</h1>
 
-    <label>Username:</label>
-    <input type="text" name="username" placeholder="Enter username" required>
+  <div style="text-align:center;">
+    <a href="<?=site_url('create')?>" class="btn-add">+ Add Student</a>
+  </div>
 
-    <label>Password:</label>
-    <input type="password" name="password" placeholder="Enter password" required>
+  <div class="search-container">
+    <input type="text" id="searchInput" class="search-box" placeholder="Search students...">
+  </div>
 
-    <label>Confirm Password:</label>
-    <input type="password" name="confirm_password" placeholder="Re-enter password" required>
+  <div class="table-wrapper">
+    <table id="studentTable">
+      <thead>
+        <tr>
+          <th>Profile</th>
+          <th>ID</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Email</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+      <?php foreach($students as $student): ?>
+        <tr>
+          <td>
+            <?php if (!empty($student['profile_pic'])): ?>
+              <img src="/upload/students/<?= $student['profile_pic'] ?>" alt="Profile" width="45" height="45">
+            <?php else: ?>
+              <img src="/upload/default.png" alt="No Profile" width="45" height="45">
+            <?php endif; ?>
+          </td>
+          <td><?= $student['id']; ?></td>
+          <td><?= $student['first_name']; ?></td>
+          <td><?= $student['last_name']; ?></td>
+          <td><?= $student['emails']; ?></td>
+          <td>
+            <a href="<?= site_url('/update/'.$student['id']); ?>" class="btn update">Update</a>
+            <a href="<?= site_url('/delete/'.$student['id']); ?>" 
+               class="btn delete"
+               onclick="return confirm('Are you sure you want to delete this record?');">
+               Delete
+            </a>
+          </td>
+        </tr>
+      <?php endforeach; ?>
+      </tbody>
+    </table>
+  </div>
 
-    <button type="submit">✨ Register 🐱</button>
+  <div class="pagination">
+    <?= isset($pagination_links) ? $pagination_links : '' ?>
+  </div>
 
-    <p>Already have an account? <a href="/index.php/login">Login here 😺</a></p>
-  </form>
+<script>
+let typingTimer;
+document.getElementById("searchInput").addEventListener("keyup", function() {
+  clearTimeout(typingTimer);
+  let keyword = this.value;
+
+  typingTimer = setTimeout(() => {
+    fetch("<?= site_url('students/search') ?>?keyword=" + keyword)
+      .then(res => res.text())
+      .then(data => {
+        document.querySelector("#studentTable tbody").innerHTML = data;
+      });
+  }, 300);
+});
+</script>
+
 </body>
 </html>
