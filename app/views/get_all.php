@@ -16,7 +16,7 @@ if (!isset($_SESSION['user_id'])) {
     /* ===== Global Dark Theme ===== */
     body {
       font-family: 'Segoe UI', Tahoma, sans-serif;
-      background: #4FC3F7;
+      background: #121212;
       color: #e0e0e0;
       margin: 0;
       padding: 20px;
