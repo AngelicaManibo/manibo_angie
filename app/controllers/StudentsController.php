@@ -80,11 +80,11 @@ public function create() {
         // Validate required fields
         $first_name = trim($this->io->post('first_name'));
         $last_name  = trim($this->io->post('last_name'));
-        $emails     = trim($this->io->post('emails'));
+        $email    = trim($this->io->post('email'));
 
         if (empty($first_name)) $errors[] = "First name is required.";
         if (empty($last_name))  $errors[] = "Last name is required.";
-        if (empty($emails) || !filter_var($emails, FILTER_VALIDATE_EMAIL)) {
+        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors[] = "A valid email is required.";
         }
 
@@ -119,7 +119,7 @@ public function create() {
         $data = [
             'first_name'  => $first_name,
             'last_name'   => $last_name,
-            'emails'      => $emails,
+            'email'      => $email,
             'profile_pic' => $profile_pic
         ];
 
@@ -140,18 +140,18 @@ public function update($id) {
         // Validate fields
         $first_name = trim($_POST['first_name']);
         $last_name  = trim($_POST['last_name']);
-        $emails     = trim($_POST['emails']);
+        $email     = trim($_POST['email']);
 
         if (empty($first_name)) $errors[] = "First name is required.";
         if (empty($last_name))  $errors[] = "Last name is required.";
-        if (empty($emails) || !filter_var($emails, FILTER_VALIDATE_EMAIL)) {
+        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors[] = "A valid email is required.";
         }
 
         $data = [
             'first_name'  => $first_name,
             'last_name'   => $last_name,
-            'emails'      => $emails,
+            'email'      => $email,
             'profile_pic' => $student['profile_pic'] // keep old picture by default
         ];
 
@@ -221,7 +221,7 @@ public function search()
                 <td>' . htmlspecialchars($row['id']) . '</td>
                 <td>' . htmlspecialchars($row['first_name']) . '</td>
                 <td>' . htmlspecialchars($row['last_name']) . '</td>
-                <td>' . htmlspecialchars($row['emails']) . '</td>
+                <td>' . htmlspecialchars($row['email']) . '</td>
                 <td class="actions">
                     <a href="' . site_url('/update/'.$row['id']) . '" class="btn update">✏️ Update</a>
                     <a href="' . site_url('/delete/'.$row['id']) . '" 
@@ -277,7 +277,7 @@ public function register()
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $first_name = $this->io->post('first_name');
         $last_name  = $this->io->post('last_name');
-        $emails     = $this->io->post('emails');
+        $email     = $this->io->post('email');
         $password   = $this->io->post('password'); // plain text password
 
         $profile_pic = null;
@@ -296,14 +296,14 @@ public function register()
 
         if (empty($first_name)) $errors[] = "First name is required.";
         if (empty($last_name))  $errors[] = "Last name is required.";
-        if (empty($emails))     $errors[] = "Email is required.";
+        if (empty($email))     $errors[] = "Email is required.";
         if (empty($password))   $errors[] = "Password is required.";
 
         if (empty($errors)) {
             $this->StudentsModel->insert([
                 'first_name'  => $first_name,
                 'last_name'   => $last_name,
-                'emails'      => $emails,
+                'email'      => $email,
                 'password'    => $password, // ✅ not hashed
                 'profile_pic' => $profile_pic
             ]);
@@ -375,14 +375,14 @@ public function user_login()
         $studentsModel = new StudentsModel();
 
         // 🔍 Check user by email and plain password
-        $sql = "SELECT * FROM students WHERE emails = ? AND password = ?";
+        $sql = "SELECT * FROM students WHERE email = ? AND password = ?";
         $stmt = $studentsModel->db->raw($sql, [$email, $password]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user) {
             // ✅ Set session variables
             $_SESSION['user_id'] = $user['id'];
-            $_SESSION['email']   = $user['emails'];
+            $_SESSION['email']   = $user['email'];
             $_SESSION['user_logged_in'] = true;
 
             // ✅ Redirect to student panel

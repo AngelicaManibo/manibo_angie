@@ -157,7 +157,7 @@
   <div class="card">
    <!-- Admin Login -->
     <form id="adminForm" class="active" action="<?= site_url('/admin') ?>" method="POST">
-      <h2>🧑‍💼 Admin Login 🐾</h2>
+      <h2>Admin Login 🐾</h2>
       <?php if (!empty($admin_error)) : ?>
         <p class="error"><?= $admin_error ?></p>
       <?php endif; ?>
@@ -169,7 +169,7 @@
     
         <!-- Student Login -->
 <form id="studentForm" class="hidden" action="<?= site_url('/user_login') ?>" method="POST">
-  <h2>🎓 Student Login 🐾</h2>
+  <h2>Student Login</h2>
   <?php if (!empty($user_error)) : ?>
     <p class="error"><?= $user_error ?></p>
   <?php endif; ?>
