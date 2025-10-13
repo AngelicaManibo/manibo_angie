@@ -161,24 +161,25 @@
       <?php if (!empty($admin_error)) : ?>
         <p class="error"><?= $admin_error ?></p>
       <?php endif; ?>
-      <input type="text" name="username" placeholder="😺 Username" required>
-      <input type="password" name="password" placeholder="🔒 Password" required>
-      <button type="submit">✨ Login as Admin ✨</button>
-      <div class="toggle-link" onclick="toggleForm('student')">🐾 Switch to Student Login 🐾</div>
+      <input type="text" name="username" placeholder="Username" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Login as Admin</button>
+      <div class="toggle-link" onclick="toggleForm('student')">Switch to Student Login</div>
     </form>
+    
         <!-- Student Login -->
 <form id="studentForm" class="hidden" action="<?= site_url('/user_login') ?>" method="POST">
   <h2>🎓 Student Login 🐾</h2>
   <?php if (!empty($user_error)) : ?>
     <p class="error"><?= $user_error ?></p>
   <?php endif; ?>
-  <input type="email" name="email" placeholder="📧 Email" required>
-  <input type="password" name="password" placeholder="🔒 Password" required>
-  <button type="submit">🐱 Login as Student 🐾</button>
+  <input type="email" name="email" placeholder="Email" required>
+  <input type="password" name="password" placeholder="Password" required>
+  <button type="submit">Login as Student</button>
   <p class="toggle-link">Don't have an account? 
-     <a href="register" style="color:#ff69b4; text-decoration:underline;">Register here 🩷</a>
+     <a href="register" style="color:#ff69b4; text-decoration:underline;">Register here</a>
   </p>
-  <div class="toggle-link" onclick="toggleForm('admin')">🧑‍💼 Switch to Admin Login 🧑‍💼</div>
+  <div class="toggle-link" onclick="toggleForm('admin')">Switch to Admin Login </div>
 </form>
     <p>Don’t have an account? <a href="<?= site_url('register') ?>">Register here</a></p>
   </div>

@@ -115,7 +115,7 @@ input[type="submit"]:hover {
 <?php endif; ?>
 
     <form action="<?= site_url('/user_update/' . $student['id']); ?>" method="POST" enctype="multipart/form-data">
-    <h2>Update My Profile 🌸</h2>
+    <h2>Update My Profile</h2>
 
     <label for="first_name">First Name</label>
     <input type="text" name="first_name" id="first_name" value="<?= htmlspecialchars($student['first_name']); ?>" placeholder="First Name">
