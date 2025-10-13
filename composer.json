@@ -1,5 +1,5 @@
 {
-  "name": "kevin/lavalust-crud",
+  "name": "angie/lavalust-crud",
   "description": "LavaLust CRUD web app with FreeSQLDatabase deployment",
   "type": "project",
   "require": {

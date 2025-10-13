@@ -35,6 +35,89 @@ if (!isset($_SESSION['user_id'])) {
       padding:30px;
     }
 
+    form {
+    background-color: #fff0f5;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    width: 350px;
+    position: relative;
+    z-index: 10;
+    animation: popIn 0.8s ease;
+  }
+h2 {
+    text-align: center;
+    color: #ff69b4;
+    margin-bottom: 20px;
+    animation: bounce 1.5s infinite;
+  }
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #ff69b4;
+    font-weight: bold;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 2px solid #ffb6c1;
+    border-radius: 10px;
+    outline: none;
+    transition: 0.3s;
+    background-color: white;
+  }
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus,
+  input[type="file"]:focus {
+    border-color: #ff69b4;
+    background-color: #ffe4e1;
+    box-shadow: 0 0 8px #ffb6c1;
+  }
+  input[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: #ff69b4;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  input[type="submit"]:hover {
+    background-color: #ff1493;
+    transform: scale(1.05);
+  }
+  .actions {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .back-link {
+    display: inline-block;
+    background-color: #ffe4e1;
+    color: #ff69b4;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    transition: all 0.3s ease-in-out;
+  }
+  .back-link:hover {
+    background-color: #ffb6c1;
+    color: white;
+    transform: scale(1.05) rotate(-2deg);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+  }
+
+
+
     h1 {
       margin:0 0 24px;
       font-size:clamp(22px,3vw,28px);
@@ -195,6 +278,36 @@ if (!isset($_SESSION['user_id'])) {
   </style>
 </head>
 <body>
+  <form action="<?= site_url('/register'); ?>" method="POST" enctype="multipart/form-data">
+  <h2>Register Account 🌸</h2>
+
+  <?php if (!empty($errors)): ?>
+    <div style="color:red; margin-bottom: 15px;">
+      <ul>
+        <?php foreach ($errors as $e): ?>
+          <li><?= htmlspecialchars($e) ?></li>
+        <?php endforeach; ?>
+      </ul>
+    </div>
+  <?php endif; ?>
+
+  <label for="first_name">First Name</label>
+  <input type="text" id="first_name" name="first_name" placeholder="Your first name" required>
+
+  <label for="last_name">Last Name</label>
+  <input type="text" id="last_name" name="last_name" placeholder="Your last name" required>
+
+  <label for="emails">Email</label>
+  <input type="email" id="emails" name="emails" placeholder="you@example.com" required>
+
+  <label for="password">Password</label>
+  <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+  <label for="profile_pic">Profile Picture</label>
+  <input type="file" id="profile_pic" name="profile_pic">
+
+    <input type="submit" value="Register ✨">
+
 
   <div class="header-bar">
     <div class="welcome">Welcome, <?= htmlspecialchars($_SESSION['username']); ?>!</div>
