@@ -80,12 +80,12 @@ public function create() {
         // Validate required fields
         $first_name = trim($this->io->post('first_name'));
         $last_name  = trim($this->io->post('last_name'));
-        $email    = trim($this->io->post('email'));
+        $emails    = trim($this->io->post('emails'));
 
         if (empty($first_name)) $errors[] = "First name is required.";
         if (empty($last_name))  $errors[] = "Last name is required.";
-        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors[] = "A valid email is required.";
+        if (empty($emails) || !filter_var($emails, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = "A valid emails is required.";
         }
 
         $profile_pic = null;
@@ -119,7 +119,7 @@ public function create() {
         $data = [
             'first_name'  => $first_name,
             'last_name'   => $last_name,
-            'email'      => $email,
+            'emails'      => $emails,
             'profile_pic' => $profile_pic
         ];
 
@@ -140,18 +140,18 @@ public function update($id) {
         // Validate fields
         $first_name = trim($_POST['first_name']);
         $last_name  = trim($_POST['last_name']);
-        $email     = trim($_POST['email']);
+        $emails     = trim($_POST['emails']);
 
         if (empty($first_name)) $errors[] = "First name is required.";
         if (empty($last_name))  $errors[] = "Last name is required.";
-        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors[] = "A valid email is required.";
+        if (empty($emails) || !filter_var($emails, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = "A valid emails is required.";
         }
 
         $data = [
             'first_name'  => $first_name,
             'last_name'   => $last_name,
-            'email'      => $email,
+            'emails'      => $emails,
             'profile_pic' => $student['profile_pic'] // keep old picture by default
         ];
 
@@ -221,7 +221,7 @@ public function search()
                 <td>' . htmlspecialchars($row['id']) . '</td>
                 <td>' . htmlspecialchars($row['first_name']) . '</td>
                 <td>' . htmlspecialchars($row['last_name']) . '</td>
-                <td>' . htmlspecialchars($row['email']) . '</td>
+                <td>' . htmlspecialchars($row['emails']) . '</td>
                 <td class="actions">
                     <a href="' . site_url('/update/'.$row['id']) . '" class="btn update">✏️ Update</a>
                     <a href="' . site_url('/delete/'.$row['id']) . '" 
@@ -277,7 +277,7 @@ public function register()
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $first_name = $this->io->post('first_name');
         $last_name  = $this->io->post('last_name');
-        $email     = $this->io->post('email');
+        $emails     = $this->io->post('emails');
         $password   = $this->io->post('password'); // plain text password
 
         $profile_pic = null;
@@ -296,14 +296,14 @@ public function register()
 
         if (empty($first_name)) $errors[] = "First name is required.";
         if (empty($last_name))  $errors[] = "Last name is required.";
-        if (empty($email))     $errors[] = "Email is required.";
+        if (empty($emails))     $errors[] = "Email is required.";
         if (empty($password))   $errors[] = "Password is required.";
 
         if (empty($errors)) {
             $this->StudentsModel->insert([
                 'first_name'  => $first_name,
                 'last_name'   => $last_name,
-                'email'      => $email,
+                'emails'      => $emails,
                 'password'    => $password, // ✅ not hashed
                 'profile_pic' => $profile_pic
             ]);
@@ -369,20 +369,20 @@ public function user_login()
     if (session_status() === PHP_SESSION_NONE) session_start();
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $email = trim($_POST['email']);
+        $emails = trim($_POST['emails']);
         $password = trim($_POST['password']);
 
         $studentsModel = new StudentsModel();
 
-        // 🔍 Check user by email and plain password
-        $sql = "SELECT * FROM students WHERE email = ? AND password = ?";
-        $stmt = $studentsModel->db->raw($sql, [$email, $password]);
+        // 🔍 Check user by emails and plain password
+        $sql = "SELECT * FROM students WHERE emails = ? AND password = ?";
+        $stmt = $studentsModel->db->raw($sql, [$emails, $password]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user) {
             // ✅ Set session variables
             $_SESSION['user_id'] = $user['id'];
-            $_SESSION['email']   = $user['email'];
+            $_SESSION['emails']   = $user['emails'];
             $_SESSION['user_logged_in'] = true;
 
             // ✅ Redirect to student panel
@@ -390,7 +390,7 @@ public function user_login()
         } else {
             // ❌ Wrong credentials
             $this->call->view('login', [
-                'user_error' => '❌ Invalid email or password'
+                'user_error' => '❌ Invalid emails or password'
             ]);
         }
     } else {

@@ -157,7 +157,7 @@
   <div class="card">
    <!-- Admin Login -->
     <form id="adminForm" class="active" action="<?= site_url('/admin') ?>" method="POST">
-      <h2>Admin Login 🐾</h2>
+      <h2>Admin Login</h2>
       <?php if (!empty($admin_error)) : ?>
         <p class="error"><?= $admin_error ?></p>
       <?php endif; ?>
@@ -173,7 +173,7 @@
   <?php if (!empty($user_error)) : ?>
     <p class="error"><?= $user_error ?></p>
   <?php endif; ?>
-  <input type="email" name="email" placeholder="Email" required>
+  <input type="emails" name="emails" placeholder="Email" required>
   <input type="password" name="password" placeholder="Password" required>
   <button type="submit">Login as Student</button>
   <p class="toggle-link">Don't have an account? 
