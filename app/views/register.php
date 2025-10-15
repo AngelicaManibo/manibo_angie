@@ -1,388 +1,166 @@
-<?php
-if (!isset($_SESSION['user_id'])) {
-    header("Location: " . site_url('login'));
-    exit;
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Management</title>
+  <title>Student Registration</title>
   <style>
-    :root{
-      --bg:#0f172a; 
-      --panel:#111827; 
-      --muted:#1f2937; 
-      --muted-2:#374151; 
-      --text:#e5e7eb; 
-      --text-dim:#9ca3af;
-      --primary:#22d3ee; 
-      --primary-2:#06b6d4; 
-      --danger:#ef4444; 
-      --success:#22c55e; 
-      --radius:14px; 
-      --shadow:0 10px 25px rgba(0,0,0,.35);
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --muted: #1f2937;
+      --muted-2: #374151;
+      --text: #e5e7eb;
+      --text-dim: #9ca3af;
+      --primary: #22d3ee;
+      --primary-2: #06b6d4;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --radius: 16px;
+      --shadow: 0 10px 25px rgba(0,0,0,.35);
     }
-    *{box-sizing:border-box;}
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      margin:0;
-      min-height:100vh;
-      background:linear-gradient(180deg,var(--bg),#0b1229 60%);
-      color:var(--text);
-      font:16px/1.5 "Segoe UI", sans-serif;
-      padding:30px;
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(180deg, var(--bg), #0b1229 60%);
+      color: var(--text);
+      font: 18px/1.5 "Segoe UI", sans-serif;
     }
 
-    form {
-    background-color: #fff0f5;
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-    width: 350px;
-    position: relative;
-    z-index: 10;
-    animation: popIn 0.8s ease;
-  }
-h2 {
-    text-align: center;
-    color: #ff69b4;
-    margin-bottom: 20px;
-    animation: bounce 1.5s infinite;
-  }
-label {
-    display: block;
-    margin-bottom: 5px;
-    color: #ff69b4;
-    font-weight: bold;
-  }
-  input[type="text"],
-  input[type="email"],
-  input[type="password"],
-  input[type="file"] {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 2px solid #ffb6c1;
-    border-radius: 10px;
-    outline: none;
-    transition: 0.3s;
-    background-color: white;
-  }
-  input[type="text"]:focus,
-  input[type="email"]:focus,
-  input[type="password"]:focus,
-  input[type="file"]:focus {
-    border-color: #ff69b4;
-    background-color: #ffe4e1;
-    box-shadow: 0 0 8px #ffb6c1;
-  }
-  input[type="submit"] {
-    width: 100%;
-    padding: 12px;
-    background-color: #ff69b4;
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  input[type="submit"]:hover {
-    background-color: #ff1493;
-    transform: scale(1.05);
-  }
-  .actions {
-    margin-top: 20px;
-    text-align: center;
-  }
-
-  .back-link {
-    display: inline-block;
-    background-color: #ffe4e1;
-    color: #ff69b4;
-    font-weight: bold;
-    text-decoration: none;
-    padding: 10px 18px;
-    border-radius: 20px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    transition: all 0.3s ease-in-out;
-  }
-  .back-link:hover {
-    background-color: #ffb6c1;
-    color: white;
-    transform: scale(1.05) rotate(-2deg);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-  }
-
-
-
-    h1 {
-      margin:0 0 24px;
-      font-size:clamp(22px,3vw,28px);
-      text-align:center;
-      color:var(--primary);
+    .card {
+      width: min(420px, 90vw);
+      background: linear-gradient(180deg, var(--panel), #0c1328);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px 24px;
+      position: relative;
     }
 
-    .header-bar {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      background:var(--panel);
-      padding:12px 18px;
-      border-radius:var(--radius);
-      margin-bottom:20px;
-      box-shadow:var(--shadow);
-    }
-    .header-bar .welcome {
-      color:var(--text-dim);
-      font-size:15px;
-    }
-    .header-bar a {
-      background:linear-gradient(180deg,var(--danger),#b91c1c);
-      padding:8px 14px;
-      border-radius:10px;
-      color:#fff;
-      text-decoration:none;
-      font-weight:600;
-      transition:.25s;
-    }
-    .header-bar a:hover {
-      box-shadow:0 0 10px rgba(239,68,68,.6);
-      transform:translateY(-2px);
+    h2 {
+      margin: 0 0 24px;
+      font-size: clamp(24px,3vw,32px);
+      text-align: center;
+      color: var(--primary);
     }
 
-    .btn-add {
-      display:inline-block;
-      margin:20px 0;
-      background:linear-gradient(180deg,var(--primary),var(--primary-2));
-      color:#06222a;
-      font-weight:700;
-      padding:12px 18px;
-      border:none;
-      border-radius:var(--radius);
-      text-decoration:none;
-      transition:.25s;
-      box-shadow:var(--shadow);
-    }
-    .btn-add:hover {
-      transform:translateY(-2px);
-      box-shadow:0 0 10px rgba(34,211,238,.6);
+    input, button {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--muted-2);
+      background: var(--muted);
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+      transition: .2s;
+      display: block;
+      margin-bottom: 15px;
     }
 
-    .search-container {
-      width:min(400px,100%);
-      margin:0 auto 25px;
-    }
-    .search-box {
-      width:100%;
-      padding:12px 14px;
-      border-radius:var(--radius);
-      border:1px solid var(--muted-2);
-      background:var(--muted);
-      color:var(--text);
-      outline:none;
-      transition:.25s;
-    }
-    .search-box:focus {
-      border-color:var(--primary);
-      box-shadow:0 0 8px rgba(34,211,238,.4);
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 8px rgba(34,211,238,.4);
     }
 
-    .table-wrapper {
-      overflow-x:auto;
-      background:var(--panel);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:10px;
-    }
-    table {
-      width:100%;
-      border-collapse:collapse;
-      color:var(--text);
-    }
-    thead {
-      background:var(--muted);
-    }
-    thead th {
-      padding:12px;
-      text-align:left;
-      font-size:14px;
-      color:var(--text-dim);
-    }
-    tbody td {
-      padding:12px;
-      border-top:1px solid var(--muted-2);
-      font-size:15px;
-    }
-    tr:hover td {
-      background:var(--muted);
-    }
-    td img {
-      border-radius:50%;
+    button {
+      background: linear-gradient(180deg, var(--primary), var(--primary-2));
+      color: #06222a;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
     }
 
-    .btn {
-      padding:6px 12px;
-      border-radius:8px;
-      font-size:14px;
-      font-weight:600;
-      text-decoration:none;
-      margin:2px;
-      display:inline-block;
-      transition:.25s;
-    }
-    .btn.update {
-      background:linear-gradient(180deg,#3b82f6,#2563eb);
-      color:#fff;
-    }
-    .btn.update:hover {
-      box-shadow:0 0 8px rgba(59,130,246,.6);
-      transform:translateY(-2px);
-    }
-    .btn.delete {
-      background:linear-gradient(180deg,var(--danger),#b91c1c);
-      color:#fff;
-    }
-    .btn.delete:hover {
-      box-shadow:0 0 8px rgba(239,68,68,.6);
-      transform:translateY(-2px);
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 10px rgba(34,211,238,.6);
     }
 
-    .pagination {
-      display:flex;
-      justify-content:center;
-      gap:8px;
-      margin:20px 0;
+    label {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+      display: block;
     }
-    .pagination a,
-    .pagination span {
-      padding:8px 12px;
-      border-radius:8px;
-      background:var(--muted);
-      color:var(--text);
-      font-size:14px;
-      text-decoration:none;
-      transition:.25s;
+
+    .error {
+      color: var(--danger);
+      font-size: 14px;
+      margin-bottom: 12px;
+      font-weight: 600;
+      text-align: center;
     }
-    .pagination a:hover {
-      background:var(--muted-2);
-      color:var(--primary);
+
+    .bottom-links {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 10px;
     }
-    .pagination .current {
-      background:var(--primary);
-      color:#06222a;
-      font-weight:700;
+
+    a {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .success {
+      color: var(--success);
+      font-size: 15px;
+      text-align: center;
+      margin-bottom: 10px;
+      font-weight: 600;
     }
   </style>
 </head>
 <body>
-  <form action="<?= site_url('/register'); ?>" method="POST" enctype="multipart/form-data">
-  <h2>Register Account 🌸</h2>
+  <div class="card">
+    <form action="<?= site_url('/register'); ?>" method="POST" enctype="multipart/form-data">
+      <h2>Create Student Account</h2>
 
-  <?php if (!empty($errors)): ?>
-    <div style="color:red; margin-bottom: 15px;">
-      <ul>
-        <?php foreach ($errors as $e): ?>
-          <li><?= htmlspecialchars($e) ?></li>
-        <?php endforeach; ?>
-      </ul>
-    </div>
-  <?php endif; ?>
+      <?php if (!empty($errors)): ?>
+        <div class="error">
+          <?php foreach ($errors as $e): ?>
+            <div><?= htmlspecialchars($e) ?></div>
+          <?php endforeach; ?>
+        </div>
+      <?php endif; ?>
 
-  <label for="first_name">First Name</label>
-  <input type="text" id="first_name" name="first_name" placeholder="Your first name" required>
+      <?php if (!empty($success_message)): ?>
+        <div class="success"><?= htmlspecialchars($success_message) ?></div>
+      <?php endif; ?>
 
-  <label for="last_name">Last Name</label>
-  <input type="text" id="last_name" name="last_name" placeholder="Your last name" required>
+      <label for="first_name">First Name</label>
+      <input type="text" id="first_name" name="first_name" placeholder="Your first name" required>
 
-  <label for="emails">Email</label>
-  <input type="email" id="emails" name="emails" placeholder="you@example.com" required>
+      <label for="last_name">Last Name</label>
+      <input type="text" id="last_name" name="last_name" placeholder="Your last name" required>
 
-  <label for="password">Password</label>
-  <input type="password" id="password" name="password" placeholder="Enter your password" required>
+      <label for="emails">Email</label>
+      <input type="email" id="emails" name="emails" placeholder="you@example.com" required>
 
-  <label for="profile_pic">Profile Picture</label>
-  <input type="file" id="profile_pic" name="profile_pic">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="Enter your password" required>
 
-    <input type="submit" value="Register ✨">
+      <label for="profile_pic">Profile Picture (optional)</label>
+      <input type="file" id="profile_pic" name="profile_pic">
 
+      <button type="submit">Register</button>
 
-  <div class="header-bar">
-    <div class="welcome">Welcome, <?= htmlspecialchars($_SESSION['username']); ?>!</div>
-    <div><a href="<?= site_url('logout'); ?>">Logout</a></div>
+      <div class="bottom-links">
+        Already have an account? <a href="<?= site_url('login') ?>">Login here</a>
+      </div>
+    </form>
   </div>
-
-  <h1>Student Management</h1>
-
-  <div style="text-align:center;">
-    <a href="<?=site_url('create')?>" class="btn-add">+ Add Student</a>
-  </div>
-
-  <div class="search-container">
-    <input type="text" id="searchInput" class="search-box" placeholder="Search students...">
-  </div>
-
-  <div class="table-wrapper">
-    <table id="studentTable">
-      <thead>
-        <tr>
-          <th>Profile</th>
-          <th>ID</th>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Email</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-      <?php foreach($students as $student): ?>
-        <tr>
-          <td>
-            <?php if (!empty($student['profile_pic'])): ?>
-              <img src="/upload/students/<?= $student['profile_pic'] ?>" alt="Profile" width="45" height="45">
-            <?php else: ?>
-              <img src="/upload/default.png" alt="No Profile" width="45" height="45">
-            <?php endif; ?>
-          </td>
-          <td><?= $student['id']; ?></td>
-          <td><?= $student['first_name']; ?></td>
-          <td><?= $student['last_name']; ?></td>
-          <td><?= $student['emails']; ?></td>
-          <td>
-            <a href="<?= site_url('/update/'.$student['id']); ?>" class="btn update">Update</a>
-            <a href="<?= site_url('/delete/'.$student['id']); ?>" 
-               class="btn delete"
-               onclick="return confirm('Are you sure you want to delete this record?');">
-               Delete
-            </a>
-          </td>
-        </tr>
-      <?php endforeach; ?>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="pagination">
-    <?= isset($pagination_links) ? $pagination_links : '' ?>
-  </div>
-
-<script>
-let typingTimer;
-document.getElementById("searchInput").addEventListener("keyup", function() {
-  clearTimeout(typingTimer);
-  let keyword = this.value;
-
-  typingTimer = setTimeout(() => {
-    fetch("<?= site_url('students/search') ?>?keyword=" + keyword)
-      .then(res => res.text())
-      .then(data => {
-        document.querySelector("#studentTable tbody").innerHTML = data;
-      });
-  }, 300);
-});
-</script>
-
 </body>
 </html>

@@ -1,169 +1,248 @@
-<?php
-if (session_status() === PHP_SESSION_NONE) session_start();
-if (!isset($_SESSION['user_logged_in']) || !$_SESSION['user_logged_in']) {
-    header("Location: " . site_url('login'));
-    exit;
-}
-$user = $user ?? null;
-?>
+<?php if (session_status() === PHP_SESSION_NONE) session_start(); ?>
+<?php if (!isset($_SESSION['user_logged_in'])): ?>
+  <?php header("Location: " . site_url('user_login')); exit; ?>
+<?php endif; ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Panel</title>
-<style>
-/* BODY */
-body {
-    font-family: 'Segoe UI', sans-serif;
-    background: #1a0f0f; /* Dark burgundy */
-    margin: 0;
-    padding: 0;
-    color: #f5f5f5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Student Dashboard</title>
+  <style>
+    /* ===== Global Dark Theme (same as admin) ===== */
+    :root {
+      --bg: #121212;
+      --panel: #1f1f1f;
+      --muted: #2c2c2c;
+      --muted-2: #333;
+      --text: #e0e0e0;
+      --text-dim: #9ca3af;
+      --primary: #00bcd4;
+      --accent: #3f51b5;
+      --radius: 8px;
+    }
+
+    html, body { height:100%; margin:0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #fff;
+      margin: 18px 0 12px;
+      font-size: 28px;
+    }
+
+    /* Header Bar */
+    .header-bar {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background:var(--panel);
+      padding:12px 18px;
+      border-radius:var(--radius);
+      margin-bottom:20px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.6);
+    }
+    .header-bar .welcome { color:var(--text-dim); }
+    .header-bar a {
+      background: linear-gradient(180deg,var(--accent), #5c6bc0);
+      color:#fff;
+      padding:8px 12px;
+      border-radius:6px;
+      text-decoration:none;
+      font-weight:600;
+    }
+
+    /* Search */
+    .search-container { width:60%; margin:18px auto; }
+    .search-box {
+      width:100%;
+      padding:12px 14px;
+      border-radius:8px;
+      border:1px solid var(--muted-2);
+      background:var(--panel);
+      color:var(--text);
+      font-size:15px;
+      outline:none;
+    }
+    .search-box:focus { box-shadow:0 0 8px rgba(0,188,212,0.15); border-color:var(--primary); }
+
+    /* Table Container */
+    .table-wrapper {
+      width: 90%;
+      margin: 0 auto;
+      background: var(--panel);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    thead {
+      background: var(--muted);
+    }
+
+    thead th {
+      color: var(--text);
+      padding: 14px 12px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    tbody td {
+      padding: 14px 12px;
+      text-align: center;
+      color: var(--text);
+      border-top: 1px solid var(--muted-2);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    tbody tr:hover {
+      background: #2a2a2a;
+    }
+
+    /* Profile image */
+    td.profile img {
+      border-radius:50%;
+      border:2px solid var(--muted-2);
+      width:50px;
+      height:50px;
+      object-fit:cover;
+    }
+
+    /* No records style */
+    .no-record {
+      text-align:center;
+      color:var(--text-dim);
+      background: var(--panel);
+      padding: 24px;
+      font-size:15px;
+    }
+
+   /* ===== Pagination (Match Admin Style) ===== */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin: 25px 0;
 }
-/* CONTAINER */
-.container {
-    background: #2b0f17;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.6);
-    width: 100%;
-    max-width: 500px;
-    text-align: center;
-    animation: fadeIn 0.6s ease forwards;
-    opacity: 0;
+
+.pagination a,
+.pagination span {
+  padding: 8px 14px;
+  background: #1f1f1f;
+  border-radius: 6px;
+  color: #e0e0e0;
+  font-size: 14px;
+  text-decoration: none;
+  border: 1px solid #333;
+  transition: 0.3s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
-/* PROFILE IMAGE */
-.profile-card img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    border: 3px solid #c1485d;
-    object-fit: cover;
-    margin-bottom: 15px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+
+.pagination a:hover {
+  background: #2c2c2c;
+  color: #00bcd4;
+  transform: translateY(-2px);
 }
-/* STUDENT INFO */
-.profile-info p {
-    margin: 8px 0;
-    font-size: 15px;
+
+.pagination .current {
+  background: #00bcd4;
+  color: #fff;
+  border-color: #00bcd4;
 }
-/* TABS */
-.tabs {
-    display: flex;
-    justify-content: space-around;
-    margin: 20px 0;
+
+.pagination .disabled {
+  background: #2c2c2c;
+  color: #777;
+  cursor: not-allowed;
+  box-shadow: none;
 }
-.tab-btn {
-    background: #3c0f1f;
-    color: #f5f5f5;
-    padding: 10px 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    border: none;
-    transition: 0.3s;
-}
-.tab-btn.active {
-    background: #c1485d;
-    transform: scale(1.05);
-}
-/* TAB CONTENT */
-.tab-content {
-    display: none;
-    background: #3c0f1f;
-    border-radius: 12px;
-    padding: 20px;
-    text-align: left;
-    animation: fadeIn 0.5s ease forwards;
-}
-.tab-content.active {
-    display: block;
-}
-/* BUTTONS */
-.edit-btn, .logout-btn {
-    background: #c1485d;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin: 10px 5px 0 5px;
-    font-weight: bold;
-    transition: transform 0.2s, background 0.3s;
-}
-.edit-btn:hover, .logout-btn:hover {
-    background: #e05d75;
-    transform: scale(1.05);
-}
-.save-btn {
-    background: #c1485d;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    width: 100%;
-    transition: 0.3s;
-}
-.save-btn:hover {
-    background: #e05d75;
-}
-</style>
+
+    @media (max-width:800px) {
+      .table-wrapper { width: 95%; }
+      .search-container { width: 95%; }
+      table th:nth-child(4), table th:nth-child(5),
+      table td:nth-child(4), table td:nth-child(5) { display:none; }
+    }
+  </style>
 </head>
 <body>
-<div class="container profile-card">
-    <?php if (!empty($user['profile_pic'])): ?>
-        <img src="/upload/students/<?= $user['profile_pic'] ?>" alt="Profile">
-    <?php else: ?>
-        <img src="/upload/default.png" alt="No Profile">
+
+  <div class="header-bar">
+    <div class="welcome">Welcome, <?= htmlspecialchars($_SESSION['username'] ?? $_SESSION['username'] ?? 'Student') ?>!</div>
+    <div><a href="<?= site_url('logout'); ?>">Logout</a></div>
+  </div>
+
+  <h1>Student Management</h1>
+
+  <div class="search-container">
+    <form method="GET" action="">
+      <input class="search-box" name="search" value="<?= htmlspecialchars($search ?? '') ?>" placeholder="Search students ...">
+    </form>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Profile</th>
+          <th>ID</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Email</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if (!empty($students)): ?>
+          <?php foreach ($students as $student): ?>
+            <tr>
+              <td class="profile">
+                <?php if (!empty($student['profile_pic'])): ?>
+                  <img src="<?= site_url('upload/students/' . $student['profile_pic']) ?>" alt="Profile">
+                <?php else: ?>
+                  <img src="<?= site_url('public/img/default.png') ?>" alt="Default">
+                <?php endif; ?>
+              </td>
+              <td><?= htmlspecialchars($student['id']) ?></td>
+              <td title="<?= htmlspecialchars($student['first_name']) ?>"><?= htmlspecialchars($student['first_name']) ?></td>
+              <td title="<?= htmlspecialchars($student['last_name']) ?>"><?= htmlspecialchars($student['last_name']) ?></td>
+              <td title="<?= htmlspecialchars($student['emails']) ?>"><?= htmlspecialchars($student['emails']) ?></td>
+            </tr>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <tr><td colspan="5" class="no-record">No records found.</td></tr>
+        <?php endif; ?>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination" role="navigation" aria-label="Pagination">
+    <?php if (isset($total_pages) && $total_pages > 0): ?>
+      <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+        <?php
+          $class = ($i == ($page ?? 1)) ? 'current' : '';
+          $link = "?page={$i}" . (isset($search) && $search !== '' ? '&search=' . urlencode($search) : '');
+        ?>
+        <a class="<?= $class ?>" href="<?= $link ?>"><?= $i ?></a>
+      <?php endfor; ?>
     <?php endif; ?>
-
-    <div class="profile-info">
-        <p><strong>ID:</strong> <?= htmlspecialchars($user['id'] ?? 'N/A'); ?></p>
-        <p><strong>Name:</strong> <?= htmlspecialchars($user['first_name'] . " " . $user['last_name'] ?? 'N/A'); ?></p>
-        <p><strong>Email:</strong> <?= htmlspecialchars($user['emails'] ?? 'N/A'); ?></p>
-    </div>
-
-    <!-- TABS -->
-    <div class="tabs">
-        <button class="tab-btn" onclick="showTab('activity')">Activity</button>
-    </div>
-
-    <!-- TAB CONTENT -->
-    <div id="activity" class="tab-content">
-        <p>Recent Activity:</p>
-        
-        <ul>
-            <li>Logged in today</li>
-            <li>Updated profile</li>
-        </ul>
-    </div>
-
-    <a href="<?= site_url('user_update/' . ($user['id'] ?? 0)); ?>"><button class="edit-btn">Edit Profile</button></a>
-    <a href="<?= site_url('logout'); ?>"><button class="logout-btn">Logout</button></a>
-</div>
-
-<script>
-function showTab(tabId) {
-    const tabs = document.querySelectorAll('.tab-content');
-    const btns = document.querySelectorAll('.tab-btn');
-    tabs.forEach(t => t.classList.remove('active'));
-    btns.forEach(b => b.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    event.currentTarget.classList.add('active');
-}
-</script>
+  </div>
 
 </body>
 </html>
-
-
-
-

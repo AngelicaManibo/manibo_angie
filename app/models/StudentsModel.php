@@ -116,4 +116,16 @@ public function findByUsername($username) {
     return $row ?: null; // return single record or null if not found
 }
 
+public function getStudents($limit = 10, $start = 0, $search = '')
+{
+    $page = floor($start / $limit) + 1; // Convert offset to page number
+    return $this->searchStudents($search, $page, $limit);
+}
+
+public function countStudents($search = '')
+{
+    return $this->count_filtered_records($search);
+}
+
+
 }

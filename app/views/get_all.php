@@ -1,5 +1,5 @@
 <?php
-// 🔒 Protect page: only logged in users can access
+// 🔒 Protect page: only logged-in users can access
 if (!isset($_SESSION['user_id'])) {
     header("Location: " . site_url('login'));
     exit;
@@ -106,32 +106,28 @@ if (!isset($_SESSION['user_id'])) {
     }
 
     /* ===== Table ===== */
-    .table-header {
-      display: grid;
-      grid-template-columns: 1fr 1fr 2fr 2fr 3fr 2fr;
-      background: #2c2c2c;
-      color: #ffffff;
-      font-weight: bold;
-      padding: 12px 0;
-      border-radius: 8px 8px 0 0;
-      margin: 0 auto;
-      width: 90%;
-    }
-
     table {
+      width: 90%;
       margin: 0 auto;
       border-collapse: collapse;
-      width: 90%;
       background: #1f1f1f;
-      border-radius: 0 0 8px 8px;
+      border-radius: 10px;
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0,0,0,0.6);
     }
-    td {
+
+    thead {
+      background: #2c2c2c;
+      color: #ffffff;
+      font-weight: bold;
+    }
+
+    th, td {
       padding: 14px 18px;
       text-align: center;
       border-bottom: 1px solid #333;
     }
+
     tr:hover {
       background: #2a2a2a;
     }
@@ -140,12 +136,12 @@ if (!isset($_SESSION['user_id'])) {
     td img {
       border-radius: 50%;
       border: 2px solid #333;
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
     }
 
     /* ===== Action Buttons ===== */
-    .actions {
-      text-align: center;
-    }
     .btn {
       display: inline-block;
       padding: 6px 14px;
@@ -201,55 +197,62 @@ if (!isset($_SESSION['user_id'])) {
 <body>
 
   <div class="header-bar">
-    <div class="welcome">Welcome, <?= htmlspecialchars($_SESSION['username']); ?>!</div>
+    <div class="welcome">
+      Welcome, <?= htmlspecialchars($_SESSION['username']); ?>!
+    </div>
     <div><a href="<?= site_url('logout'); ?>">Logout</a></div>
   </div>
 
   <h1>Student Management</h1>
 
-  <div class="top-actions">
-    <a href="<?=site_url('create')?>">
-      <button class="btn-add">+ Add Student</button>
-    </a>
-  </div>
+  <?php if ($_SESSION['role'] === 'admin'): ?>
+    <div class="top-actions">
+      <a href="<?= site_url('create') ?>">
+        <button class="btn-add">+ Add Student</button>
+      </a>
+    </div>
+  <?php endif; ?>
 
   <div class="search-container">
     <input type="text" id="searchInput" class="search-box" placeholder="Search students...">
   </div>
-  
-  <div class="table-header">
-    <div>Profile</div>
-    <div>ID</div>
-    <div>First Name</div>
-    <div>Last Name</div>
-    <div>Email</div>
-    <div>Action</div>
-  </div>
 
   <table id="studentTable">
+    <thead>
+      <tr>
+        <th>Profile</th>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Action</th>
+      </tr>
+    </thead>
     <tbody>
     <?php foreach($students as $student): ?>
     <tr>
       <td>
         <?php if (!empty($student['profile_pic'])): ?>
-          <img src="/upload/students/<?= $student['profile_pic'] ?>" 
-              alt="Profile" width="50" height="50">
+          <img src="/upload/students/<?= $student['profile_pic'] ?>" alt="Profile">
         <?php else: ?>
-          <img src="/upload/default.png" 
-              alt="No Profile" width="50" height="50">
+          <img src="/upload/default.png" alt="No Profile">
         <?php endif; ?>
       </td> 
       <td><?= $student['id']; ?></td>
       <td><?= $student['first_name']; ?></td>
       <td><?= $student['last_name']; ?></td>
       <td><?= $student['emails']; ?></td>
-      <td class="actions">
-        <a href="<?= site_url('/update/'.$student['id']); ?>" class="btn update">Update</a>
-        <a href="<?= site_url('/delete/'.$student['id']); ?>" 
-           class="btn delete"
-           onclick="return confirm('Are you sure you want to delete this record?');">
-           Delete
-        </a>
+      <td>
+        <?php if ($_SESSION['role'] === 'admin'): ?>
+          <a href="<?= site_url('/update/'.$student['id']); ?>" class="btn update">Update</a>
+          <a href="<?= site_url('/delete/'.$student['id']); ?>" 
+             class="btn delete"
+             onclick="return confirm('Are you sure you want to delete this record?');">
+             Delete
+          </a>
+        <?php else: ?>
+          <span style="color:#9ca3af;">View Only</span>
+        <?php endif; ?>
       </td>
     </tr>
     <?php endforeach; ?>

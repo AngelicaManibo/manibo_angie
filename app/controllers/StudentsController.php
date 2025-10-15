@@ -317,26 +317,21 @@ public function register()
 }
 
 public function user_panel()
-{
-    // Ensure only logged-in users can access
-    if (!isset($_SESSION['user_id'])) {
-        header("Location: " . site_url('login'));
-        exit;
+    {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+
+        // ✅ Check if student is logged in
+        if (!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true) {
+            redirect('/user_login');
+            exit;
+        }
+
+        $studentsModel = new StudentsModel();
+        $students = $studentsModel->get_records_with_pagination(); // or your existing method
+
+        $this->call->view('user_panel', ['students' => $students]);
     }
 
-    // Load model
-    $studentsModel = new StudentsModel();
-
-    // ✅ Fetch the logged-in user's record
-    $user_id = $_SESSION['user_id'];
-    $student = $studentsModel->find($user_id); // fetch single record
-
-    // ✅ Pass it to the view
-    $data['user'] = $student;
-
-    // ✅ Load view
-    $this->call->view('user_panel', $data);
-}
 public function admin_login()
 {
      if (session_status() === PHP_SESSION_NONE) session_start();
@@ -352,6 +347,10 @@ public function admin_login()
             $_SESSION['user_id'] = 1; // admin ID (any value)
             $_SESSION['username'] = 'admin';
             $_SESSION['admin_logged_in'] = true;
+            
+            // Add role for admin
+            $_SESSION['role'] = 'admin';
+
 
             redirect('/get_all'); // absolute path recommended
             return;
@@ -382,10 +381,13 @@ public function user_login()
         if ($user) {
             // ✅ Set session variables
             $_SESSION['user_id'] = $user['id'];
-            $_SESSION['emails']   = $user['emails'];
+            $_SESSION['emails'] = $user['emails'];
             $_SESSION['user_logged_in'] = true;
 
-            // ✅ Redirect to student panel
+            // Add role for student
+            $_SESSION['role'] = 'student';
+
+            // ✅ Redirect to student table view
             redirect('/user_panel');
         } else {
             // ❌ Wrong credentials
@@ -397,5 +399,6 @@ public function user_login()
         $this->call->view('login');
     }
 }
+
 
 }
